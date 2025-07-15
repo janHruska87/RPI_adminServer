@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build.meta"
+
+[project]
+name = "rpi-manager"
+version = "0.1.0"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "aiosqlite",
+    "pydantic",
+]
