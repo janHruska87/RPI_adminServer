@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>Správa jednotek</title></head>
+<body>
+<h1>Jednotky (RPi)</h1>
+<form method="post" action="/api/v1/devices/add/">
+    <input name="name" placeholder="Název jednotky" required />
+    <input name="description" placeholder="Popis" />
+    <button type="submit">Přidat jednotku</button>
+</form>
+<hr>
+<ul>
+    {% for device in devices %}
+        <li>
+            {{ device.name }} - {{ device.description or "bez popisu" }}
+            <form method="post" action="/api/v1/devices/delete/{{ device.id }}" style="display:inline">
+                <button type="submit">🗑️</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+</body>
+</html>
