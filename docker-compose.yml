@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  rpi_server:
+    build: .
+    container_name: rpi_server
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./images:/app/images
+      - ./config_files:/app/config_files
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./rpi.db
+      - IMAGE_UPLOAD_DIR=./images
+      - CONFIG_UPLOAD_DIR=./config_files
