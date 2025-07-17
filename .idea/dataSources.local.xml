@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="PY-251.26927.74">
-    <data-source name="RPI_manager" uuid="4a69035f-8370-4dbb-94cf-1f0914be4a80">
+  <component name="dataSourceStorageLocal" created-in="PY-251.26927.90">
+    <data-source name="rpi" uuid="b28b5abb-13c7-45e2-b36e-a94bc5a56c3f">
       <database-info product="SQLite" version="3.45.1" jdbc-version="4.2" driver-name="SQLite JDBC" driver-version="3.45.1.0" dbms="SQLITE" exact-version="3.45.1" exact-driver-version="3.45">
         <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
-      <secret-storage>master_key</secret-storage>
       <auth-provider>no-auth</auth-provider>
       <schema-mapping>
         <introspection-scope>

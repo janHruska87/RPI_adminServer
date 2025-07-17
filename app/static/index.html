@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RPI Units Manager</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    form, .upload-section { margin-bottom: 2rem; }
+    input, button { margin: 0.25rem; padding: 0.5rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>RPI Units Manager</h1>
+
+  <form id="rpi-form">
+    <input type="hidden" id="unit-id" />
+    <input type="text" id="name" placeholder="Name" required />
+    <input type="text" id="ip" placeholder="IP Address" required />
+    <button type="submit">Save</button>
+  </form>
+
+  <div class="upload-section">
+    <h3>Upload Config</h3>
+    <input type="file" id="config-file" />
+    <button onclick="uploadFile('config')">Upload Config</button>
+  </div>
+
+  <div class="upload-section">
+    <h3>Upload Image</h3>
+    <input type="file" id="image-file" />
+    <button onclick="uploadFile('image')">Upload Image</button>
+  </div>
+
+  <h2>RPI Units</h2>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Name</th><th>IP Address</th><th>Actions</th></tr>
+    </thead>
+    <tbody id="units-table"></tbody>
+  </table>
+
+  <script>
+    const API = "/api/v1";
+
+    async function fetchUnits() {
+      const res = await fetch(`${API}/rpi-units`);
+      const units = await res.json();
+      const table = document.getElementById("units-table");
+      table.innerHTML = "";
+      units.forEach(unit => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${unit.id}</td>
+          <td>${unit.name}</td>
+          <td>${unit.ip_address}</td>
+          <td>
+            <button onclick="editUnit(${unit.id}, '${unit.name}', '${unit.ip_address}')">Edit</button>
+            <button onclick="deleteUnit(${unit.id})">Delete</button>
+          </td>`;
+        table.appendChild(row);
+      });
+    }
+
+    async function deleteUnit(id) {
+      await fetch(`${API}/rpi-units/${id}`, { method: "DELETE" });
+      fetchUnits();
+    }
+
+    function editUnit(id, name, ip) {
+      document.getElementById("unit-id").value = id;
+      document.getElementById("name").value = name;
+      document.getElementById("ip").value = ip;
+    }
+
+    document.getElementById("rpi-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("unit-id").value;
+      const name = document.getElementById("name").value;
+      const ip = document.getElementById("ip").value;
+      const data = JSON.stringify({ name, ip_address: ip });
+
+      if (id) {
+        await fetch(`${API}/rpi-units/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: data
+        });
+      } else {
+        await fetch(`${API}/rpi-units/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: data
+        });
+      }
+      document.getElementById("unit-id").value = "";
+      document.getElementById("name").value = "";
+      document.getElementById("ip").value = "";
+      fetchUnits();
+    });
+
+    async function uploadFile(type) {
+      const fileInput = document.getElementById(`${type}-file`);
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      await fetch(`${API}/upload/${type}`, { method: "POST", body: formData });
+      alert(`${type.charAt(0).toUpperCase() + type.slice(1)} uploaded.`);
+      fileInput.value = "";
+    }
+
+    fetchUnits();
+  </script>
+</body>
+</html>
